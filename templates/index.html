@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银行智能尽调Agent系统</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🏦</span>
+                <span class="logo-text">银行智能尽调系统</span>
+            </div>
+            <div class="user-info">
+                <span class="user-name">客户经理</span>
+            </div>
+        </header>
+
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <nav class="nav">
+                <a href="#" class="nav-item active">
+                    <span class="nav-icon">🔍</span>
+                    <span>智能查询</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span>历史记录</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">📄</span>
+                    <span>报告管理</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    <span>系统设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 查询区域 -->
+            <section class="search-section">
+                <h2>企业风险尽调分析</h2>
+                <p class="subtitle">输入客户名称/证件号/客户号，快速获取企业风险分析报告</p>
+                <div class="search-box">
+                    <input type="text" id="keywordInput" placeholder="请输入客户名称或统一社会信用代码" class="search-input">
+                    <button id="analyzeBtn" class="btn-primary">开始分析</button>
+                </div>
+            </section>
+
+            <!-- 分析进度 -->
+            <section class="agent-section" id="progressSection">
+                <h3>AI智能分析流程</h3>
+                <div class="flow-steps">
+                    <div class="step" id="step1">
+                        <div class="step-num">1</div>
+                        <div class="step-content">
+                            <div class="step-title">查询企业信息</div>
+                            <div class="step-desc">获取企业基本信息</div>
+                        </div>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step" id="step2">
+                        <div class="step-num">2</div>
+                        <div class="step-content">
+                            <div class="step-title">分析交易数据</div>
+                            <div class="step-desc">分析账户流水</div>
+                        </div>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step" id="step3">
+                        <div class="step-num">3</div>
+                        <div class="step-content">
+                            <div class="step-title">AI风险评估</div>
+                            <div class="step-desc">多维度风险分析</div>
+                        </div>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step" id="step4">
+                        <div class="step-num">4</div>
+                        <div class="step-content">
+                            <div class="step-title">智能生成报告</div>
+                            <div class="step-desc">输出分析结果</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 分析结果 -->
+            <section class="result-section" id="resultSection" style="display: none;">
+                <h3>尽调报告摘要</h3>
+                <div class="result-card">
+                    <!-- 风险等级 -->
+                    <div class="risk-badge" id="riskBadge">
+                        <span class="risk-icon">⚠️</span>
+                        <span class="risk-text" id="riskText">中等风险</span>
+                    </div>
+
+                    <!-- 企业信息 -->
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">企业名称</div>
+                            <div class="info-value" id="companyName">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">所属行业</div>
+                            <div class="info-value" id="industry">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">注册资本</div>
+                            <div class="info-value" id="regCapital">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">风险等级</div>
+                            <div class="info-value" id="riskLevel">-</div>
+                        </div>
+                    </div>
+
+                    <!-- 关键发现 -->
+                    <div class="findings">
+                        <h4>关键发现</h4>
+                        <ul id="findingsList">
+                            <!-- 动态填充 -->
+                        </ul>
+                    </div>
+
+                    <!-- 建议 -->
+                    <div class="suggestion">
+                        <h4>结论与建议</h4>
+                        <p id="suggestionText">-</p>
+                    </div>
+
+                    <!-- 导出按钮 -->
+                    <button class="btn-secondary" id="exportBtn">导出报告</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
