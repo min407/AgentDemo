@@ -1,5 +1,34 @@
 // 银行智能尽调Agent - 前端逻辑
 
+// 切换tab功能
+function switchTab(tab) {
+    if (tab === 'query') {
+        // 当前就是查询页面，不需要操作
+    }
+}
+
+// 显示开发中弹窗
+function showComingSoon(featureName) {
+    const modal = document.getElementById('comingSoonModal');
+    const modalText = document.getElementById('modalText');
+    modalText.textContent = `${featureName}功能正在开发中，敬请期待！`;
+    modal.style.display = 'flex';
+}
+
+// 关闭弹窗
+function closeModal() {
+    const modal = document.getElementById('comingSoonModal');
+    modal.style.display = 'none';
+}
+
+// 点击弹窗外部关闭
+window.onclick = function(event) {
+    const modal = document.getElementById('comingSoonModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // 获取DOM元素
     const keywordInput = document.getElementById('keywordInput');
@@ -139,21 +168,132 @@ document.addEventListener('DOMContentLoaded', function() {
         riskText.textContent = getRiskText(riskLevel);
         riskLevelEl.textContent = getRiskText(riskLevel);
 
+        // 风险评分进度条
+        const riskScore = data.risk_analysis.risk_score || 50;
+        const riskScoreValue = document.getElementById('riskScoreValue');
+        const riskScoreFill = document.getElementById('riskScoreFill');
+
+        riskScoreValue.textContent = riskScore + '分';
+        riskScoreFill.style.width = riskScore + '%';
+        riskScoreFill.className = 'risk-score-fill ' + riskLevel;
+
+        // 如果有LLM分析结果，显示AI分析标识
+        if (data.risk_analysis.llm_analysis) {
+            // 检查是否已存在AI标识，避免重复添加
+            let aiBadge = document.getElementById('aiAnalysisBadge');
+            if (!aiBadge) {
+                // 在报告卡片开头添加AI分析标识
+                const resultCard = document.getElementById('reportCard');
+                const aiBadgeHtml = `
+                    <div id="aiAnalysisBadge" class="ai-badge">
+                        <span class="ai-badge-icon">🤖</span>
+                        <span>AI智能分析 · 基于通义千问大模型</span>
+                    </div>
+                    <div class="analysis-source">
+                        <div class="analysis-source-title">
+                            <span>🧠</span>
+                            <span>AI分析说明</span>
+                        </div>
+                        <div class="analysis-source-text">
+                            本报告由AI大模型基于企业基本信息、财务数据、交易流水等多维度信息进行综合分析推理生成。包含6大风险维度的智能评估、红旗信号识别及后续建议。
+                        </div>
+                    </div>
+                `;
+                resultCard.insertAdjacentHTML('afterbegin', aiBadgeHtml);
+            }
+        }
+
+        // 维度评分卡片
+        const dimensionScoresEl = document.getElementById('dimensionScores');
+        dimensionScoresEl.innerHTML = '';
+
+        const dimensionNames = {
+            'operation_stability': '经营稳定',
+            'cash_flow': '资金流向',
+            'industry_risk': '行业风险',
+            'transaction_behavior': '交易行为',
+            'aml_screening': '反洗钱',
+            'overall': '综合风险'
+        };
+
+        const findings = data.risk_analysis.findings || [];
+        const dimensions = findings.filter(f => f.type_key && dimensionNames[f.type_key]);
+
+        if (dimensions.length > 0) {
+            dimensions.forEach(dim => {
+                const card = document.createElement('div');
+                card.className = 'dimension-card ' + dim.level.toLowerCase();
+                card.innerHTML = `
+                    <div class="dimension-name">${dimensionNames[dim.type_key] || dim.type}</div>
+                    <div class="dimension-score">${dim.score}</div>
+                `;
+                dimensionScoresEl.appendChild(card);
+            });
+        }
+
+        // 红旗信号
+        const redFlags = findings.filter(f => f.type_key === 'red_flags');
+        const redFlagsSection = document.getElementById('redFlagsSection');
+        const redFlagsList = document.getElementById('redFlagsList');
+
+        if (redFlags.length > 0) {
+            redFlagsSection.style.display = 'block';
+            redFlagsList.innerHTML = '';
+            redFlags.forEach(flag => {
+                const div = document.createElement('div');
+                div.className = 'red-flag';
+                div.innerHTML = `
+                    <span class="red-flag-icon">🚩</span>
+                    <span class="red-flag-text">${flag.detail}</span>
+                `;
+                redFlagsList.appendChild(div);
+            });
+        } else {
+            redFlagsSection.style.display = 'none';
+        }
+
         // 关键发现
         const findingsList = document.getElementById('findingsList');
         findingsList.innerHTML = '';
 
-        const findings = data.risk_analysis.findings || [];
-        findings.forEach(finding => {
+        const keyFindings = findings.filter(f => f.type_key === 'key_findings' || !f.type_key);
+        keyFindings.forEach(finding => {
             const li = document.createElement('li');
-            li.className = finding.level.toLowerCase();
-            li.textContent = `${finding.type}：${finding.detail}`;
+            li.className = finding.level ? finding.level.toLowerCase() : 'medium';
+            li.textContent = `${finding.type || '发现'}：${finding.detail || finding.finding}`;
             findingsList.appendChild(li);
         });
 
         // 建议
-        const recommendation = data.summary.recommendation;
-        document.getElementById('suggestionText').textContent = recommendation;
+        const recommendations = data.risk_analysis.recommendations || [];
+        const suggestionText = document.getElementById('suggestionText');
+
+        if (recommendations.length > 0) {
+            suggestionText.innerHTML = recommendations.map(r => `• ${r}`).join('<br>');
+        } else {
+            suggestionText.textContent = data.summary?.recommendation || '建议持续监控';
+        }
+
+        // 后续步骤
+        const nextSteps = data.risk_analysis.next_steps || [];
+        const nextStepsSection = document.getElementById('nextStepsSection');
+        const nextStepsList = document.getElementById('nextStepsList');
+
+        if (nextSteps.length > 0) {
+            nextStepsSection.style.display = 'block';
+            nextStepsList.innerHTML = '';
+            nextSteps.forEach(step => {
+                const li = document.createElement('li');
+                li.style.padding = '8px 0';
+                li.style.borderBottom = '1px solid #f0f0f0';
+                li.style.fontSize = '13px';
+                li.style.color = '#555';
+                li.textContent = '• ' + step;
+                nextStepsList.appendChild(li);
+            });
+        } else {
+            nextStepsSection.style.display = 'none';
+        }
 
         // 显示结果区域
         resultSection.style.display = 'block';

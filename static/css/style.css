@@ -502,7 +502,7 @@ body {
 
 /* 响应式 - 手机端适配 */
 @media (max-width: 768px) {
-    /* 隐藏侧边栏 */
+    /* 隐藏侧边栏，改为顶部导航 */
     .sidebar {
         display: none;
     }
@@ -511,11 +511,18 @@ body {
     .main-content {
         margin-left: 0;
         padding: 16px;
+        padding-top: 80px;
     }
 
-    /* 头部适配 */
+    /* 头部适配 - 增加高度放汉堡菜单 */
     .header {
         padding: 0 16px;
+        height: 60px;
+    }
+
+    /* 汉堡菜单按钮 */
+    .menu-toggle {
+        display: flex !important;
     }
 
     .logo-text {
@@ -524,7 +531,11 @@ body {
 
     /* 搜索框适配 */
     .search-section {
-        padding: 20px 16px;
+        padding: 16px;
+    }
+
+    .search-section h2 {
+        font-size: 18px;
     }
 
     .search-box {
@@ -533,49 +544,434 @@ body {
 
     .search-input {
         width: 100%;
+        height: 48px;
+        font-size: 16px;
     }
 
     .btn-primary {
         width: 100%;
+        height: 48px;
+        font-size: 16px;
     }
 
-    /* 流程步骤适配 */
+    /* 流程步骤适配 - 改为垂直布局 */
     .flow-steps {
-        flex-wrap: wrap;
-        gap: 12px;
+        flex-direction: column;
+        gap: 8px;
     }
 
     .step {
-        width: 45%;
+        width: 100%;
+        padding: 12px;
     }
 
     .step-arrow {
         display: none;
     }
 
-    /* 信息网格适配 */
+    /* 信息网格适配 - 2列 */
     .info-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        gap: 10px;
     }
 
     .info-item {
         padding: 12px;
     }
 
+    .info-label {
+        font-size: 11px;
+    }
+
+    .info-value {
+        font-size: 13px;
+    }
+
     /* 结果卡片适配 */
-    .result-card {
+    .result-section {
         padding: 16px;
     }
 
-    /* 工具网格适配 */
-    .tools-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .result-card {
+        padding: 12px;
+    }
+
+    .risk-badge {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    /* 关键发现 */
+    .findings li {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    /* 建议区域 */
+    .suggestion {
+        padding: 12px;
+    }
+
+    .suggestion p {
+        font-size: 13px;
     }
 
     /* 按钮适配 */
     .btn-secondary {
         width: 100%;
         margin-top: 12px;
+        padding: 14px;
+        font-size: 15px;
+    }
+
+    /* 工具网格适配 */
+    .tools-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Agent区域 */
+    .agent-section {
+        padding: 16px;
+    }
+
+    .agent-section h3 {
+        font-size: 15px;
+    }
+}
+
+/* 更小屏幕适配 */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 12px;
+        padding-top: 70px;
+    }
+
+    .logo-text {
+        font-size: 14px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .header {
+        height: 56px;
+    }
+
+    .step {
+        padding: 10px;
+    }
+
+    .step-num {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+
+    .step-title {
+        font-size: 12px;
+    }
+
+    .step-desc {
+        font-size: 10px;
+    }
+}
+
+/* 移动端菜单按钮 */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+}
+
+/* 移动端下拉菜单 */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 99;
+    padding: 10px 0;
+}
+
+.mobile-nav.show {
+    display: block;
+}
+
+.mobile-nav .nav-item {
+    padding: 14px 20px;
+    border-left: none;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.mobile-nav .nav-item:hover,
+.mobile-nav .nav-item.active {
+    background: #f5f5f5;
+}
+
+/* 风险评分进度条 */
+.risk-score-bar {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.risk-score-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #666;
+}
+
+.risk-score-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.risk-score-track {
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.risk-score-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.risk-score-fill.low {
+    background: linear-gradient(90deg, #4caf50, #8bc34a);
+}
+
+.risk-score-fill.medium {
+    background: linear-gradient(90deg, #ff9800, #ffc107);
+}
+
+.risk-score-fill.high {
+    background: linear-gradient(90deg, #f44336, #ff5722);
+}
+
+/* 红旗信号样式 */
+.red-flag {
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    background: #ffebee;
+    border-radius: 8px;
+    border-left: 4px solid #f44336;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.red-flag-icon {
+    font-size: 18px;
+}
+
+.red-flag-text {
+    font-size: 13px;
+    color: #c62828;
+    line-height: 1.5;
+}
+
+/* 维度评分卡片 */
+.dimension-scores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.dimension-card {
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.dimension-card.high {
+    background: #ffebee;
+}
+
+.dimension-card.medium {
+    background: #fff3e0;
+}
+
+.dimension-card.low {
+    background: #e8f5e9;
+}
+
+.dimension-name {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.dimension-score {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.dimension-card.high .dimension-score {
+    color: #c62828;
+}
+
+.dimension-card.medium .dimension-score {
+    color: #e65100;
+}
+
+.dimension-card.low .dimension-score {
+    color: #2e7d32;
+}
+
+/* 开发中徽章 */
+.coming-soon-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    background: #ff9800;
+    color: #fff;
+    border-radius: 10px;
+    margin-left: auto;
+}
+
+/* AI分析标识 */
+.ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border-radius: 16px;
+    font-size: 12px;
+    margin-bottom: 16px;
+}
+
+.ai-badge-icon {
+    font-size: 14px;
+}
+
+/* 分析来源说明 */
+.analysis-source {
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8f4f8 100%);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #667eea;
+}
+
+.analysis-source-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.analysis-source-text {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* 弹窗样式 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    max-width: 320px;
+    animation: modalIn 0.3s ease;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.modal-text {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+}
+
+.modal-btn {
+    padding: 10px 32px;
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .dimension-scores {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .dimension-scores {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .dimension-card {
+        padding: 10px;
+    }
+
+    .dimension-score {
+        font-size: 18px;
     }
 }

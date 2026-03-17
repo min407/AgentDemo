@@ -24,24 +24,37 @@
         <!-- 侧边栏 -->
         <aside class="sidebar">
             <nav class="nav">
-                <a href="#" class="nav-item active">
+                <a href="#" class="nav-item active" onclick="switchTab('query')">
                     <span class="nav-icon">🔍</span>
                     <span>智能查询</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" onclick="showComingSoon('历史记录')">
                     <span class="nav-icon">📋</span>
                     <span>历史记录</span>
+                    <span class="coming-soon-badge">开发中</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" onclick="showComingSoon('报告管理')">
                     <span class="nav-icon">📄</span>
                     <span>报告管理</span>
+                    <span class="coming-soon-badge">开发中</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" onclick="showComingSoon('系统设置')">
                     <span class="nav-icon">⚙️</span>
                     <span>系统设置</span>
+                    <span class="coming-soon-badge">开发中</span>
                 </a>
             </nav>
         </aside>
+
+        <!-- 开发中提示弹窗 -->
+        <div id="comingSoonModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-icon">🚧</div>
+                <div class="modal-title">功能开发中</div>
+                <div class="modal-text" id="modalText">敬请期待！</div>
+                <button class="modal-btn" onclick="closeModal()">知道了</button>
+            </div>
+        </div>
 
         <!-- 主内容区 -->
         <main class="main-content">
@@ -103,11 +116,33 @@
             <!-- 分析结果 -->
             <section class="result-section" id="resultSection" style="display: none;">
                 <h3>尽调报告摘要</h3>
-                <div class="result-card">
+                <div class="result-card" id="reportCard">
                     <!-- 风险等级 -->
                     <div class="risk-badge" id="riskBadge">
                         <span class="risk-icon">⚠️</span>
                         <span class="risk-text" id="riskText">中等风险</span>
+                    </div>
+
+                    <!-- 风险评分进度条 -->
+                    <div class="risk-score-bar">
+                        <div class="risk-score-label">
+                            <span>综合风险评分</span>
+                            <span class="risk-score-value" id="riskScoreValue">50分</span>
+                        </div>
+                        <div class="risk-score-track">
+                            <div class="risk-score-fill medium" id="riskScoreFill" style="width: 50%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 维度评分卡片 -->
+                    <div class="dimension-scores" id="dimensionScores">
+                        <!-- 动态填充 -->
+                    </div>
+
+                    <!-- 红旗信号 -->
+                    <div id="redFlagsSection" style="display: none;">
+                        <h4 style="font-size: 14px; font-weight: 600; color: #c62828; margin-bottom: 12px;">🚩 红旗信号</h4>
+                        <div id="redFlagsList"></div>
                     </div>
 
                     <!-- 企业信息 -->
@@ -142,6 +177,12 @@
                     <div class="suggestion">
                         <h4>结论与建议</h4>
                         <p id="suggestionText">-</p>
+                    </div>
+
+                    <!-- 后续步骤 -->
+                    <div class="next-steps" id="nextStepsSection" style="display: none; margin-bottom: 20px;">
+                        <h4 style="font-size: 14px; font-weight: 600; color: #1a73e8; margin-bottom: 12px;">📋 后续步骤</h4>
+                        <ul id="nextStepsList" style="list-style: none;"></ul>
                     </div>
 
                     <!-- 导出按钮 -->

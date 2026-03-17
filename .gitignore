@@ -24,3 +24,11 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# 面试相关文件（本地保留，不上传）
+docs/DECISION_LOG.md
+docs/PRD.md
+企查查-模拟数据.xlsx
+
+# Python
+*.egg-info/

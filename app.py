@@ -212,42 +212,107 @@ def analyze_risk(enterprise_info, transactions):
     risk_findings = []
 
     # ========== LLM智能分析 ==========
-    # 构建prompt
-    prompt = f"""你是一个银行风险分析师。请根据以下企业信息进行风险评估。
+    # 构建prompt - 优化后的更全面分析框架
+    # 企业成立年限
+    import datetime
+    try:
+        est_date = datetime.datetime.strptime(enterprise_info.get('establish_date', '2000-01-01'), '%Y-%m-%d')
+        years_since_establish = (datetime.datetime.now() - est_date).days // 365
+    except:
+        years_since_establish = 0
 
-企业名称：{enterprise_info.get('customer_name', '未知')}
-行业：{enterprise_info.get('industry', '未知')}
-注册资本：{_format_amount(enterprise_info.get('reg_capital', 0))}
-成立日期：{enterprise_info.get('establish_date', '未知')}
-经营范围：{enterprise_info.get('business_scope', '未知')}
+    # 计算收入支出比
+    income = transactions.get('total_income', 0)
+    expense = transactions.get('total_outflow', 0)
+    income_expense_ratio = (income - expense) / income * 100 if income > 0 else 0
 
-交易流水数据：
-- 账户余额：{_format_amount(transactions.get('balance', 0))}
-- 近3个月收入：{_format_amount(transactions.get('total_income', 0))}
-- 近3个月支出：{_format_amount(transactions.get('total_outflow', 0))}
-- 交易笔数：{transactions.get('transaction_count', 0)}笔
-- 大额交易：{len(transactions.get('large_transactions', []))}笔
+    prompt = f"""你是一个资深的银行风险尽调分析师，擅长企业信用风险评估和反洗钱筛查。请根据以下企业信息进行专业、深入的风险评估。
 
-请从以下4个维度进行分析：
-1. 经营风险（流水异常、资金流向）
-2. 行业风险（行业周期、政策影响）
-3. 经营风险（稳定性、持续性）
-4. 合规风险（交易特征）
+## 一、企业基本信息
+| 字段 | 内容 |
+|------|------|
+| 企业名称 | {enterprise_info.get('customer_name', '未知')} |
+| 统一社会信用代码 | {enterprise_info.get('credit_code', '未知')} |
+| 行业分类 | {enterprise_info.get('industry', '未知')} |
+| 注册资本 | {enterprise_info.get('reg_capital', 0)}万元 |
+| 成立日期 | {enterprise_info.get('establish_date', '未知')}（已成立{years_since_establish}年） |
+| 法定代表人人 | {enterprise_info.get('legal_person', '未知')} |
+| 企业规模 | {enterprise_info.get('company_size', '未知')} |
+| 风险评级 | {enterprise_info.get('risk_level', '未知')} |
+| 经营范围 | {enterprise_info.get('business_scope', '未知')} |
 
-请返回JSON格式：
+## 二、财务与交易数据
+| 指标 | 数值 |
+|------|------|
+| 账户余额 | {_format_amount(transactions.get('balance', 0))} |
+| 近3个月收入 | {_format_amount(transactions.get('total_income', 0))} |
+| 近3个月支出 | {_format_amount(transactions.get('total_outflow', 0))} |
+| 收支盈余率 | {income_expense_ratio:.1f}% |
+| 交易笔数 | {transactions.get('transaction_count', 0)}笔 |
+| 月均交易笔数 | {transactions.get('transaction_count', 0) // 3}笔/月 |
+
+## 三、大额交易明细
+{chr(10).join([f"- {tx['date']}: {'收入' if tx['type']=='in' else '支出'} {tx['amount']/10000:.0f}万 - {tx['desc']}" for tx in transactions.get('large_transactions', [])]) if transactions.get('large_transactions') else '无大额交易记录'}
+
+## 四、分析框架与要求
+
+请从以下**6个核心维度**进行深度分析：
+
+### 1. 经营稳定性分析 (Operation Stability)
+- 成立年限与注册资本是否匹配
+- 经营周期是否稳定
+- 收入支出是否健康
+
+### 2. 资金流向分析 (Cash Flow Analysis)
+- 资金流入来源是否分散
+- 大额资金进出是否合理
+- 是否存在异常资金归集
+
+### 3. 行业风险评估 (Industry Risk)
+- 所在行业周期阶段
+- 行业政策影响（是否为监管重点行业）
+- 行业竞争格局
+
+### 4. 交易行为分析 (Transaction Behavior)
+- 交易频率是否异常
+- 是否存在夜间交易
+- 是否有集中转入分散转出等可疑特征
+
+### 5. 反洗钱筛查 (AML Screening)
+- 是否涉及可疑交易特征
+- 是否符合客户身份
+- 是否需要加强型尽职调查
+
+### 6. 综合风险评级 (Overall Risk Rating)
+- 综合以上各维度，给出最终风险等级
+
+## 五、输出要求
+
+请返回以下JSON格式，必须包含所有字段：
+
 {{
     "risk_level": "low/medium/high",
+    "risk_score": 0-100,
     "dimensions": {{
-        "operation_risk": {{"score": 0-100, "finding": "发现"}},
-        "industry_risk": {{"score": 0-100, "finding": "发现"}},
-        "stability_risk": {{"score": 0-100, "finding": "发现"}},
-        "compliance_risk": {{"score": 0-100, "finding": "发现"}}
+        "operation_stability": {{"score": 0-100, "finding": "分析发现", "detail": "具体说明"}},
+        "cash_flow": {{"score": 0-100, "finding": "分析发现", "detail": "具体说明"}},
+        "industry_risk": {{"score": 0-100, "finding": "分析发现", "detail": "具体说明"}},
+        "transaction_behavior": {{"score": 0-100, "finding": "分析发现", "detail": "具体说明"}},
+        "aml_screening": {{"score": 0-100, "finding": "分析发现", "detail": "具体说明"}},
+        "overall": {{"score": 0-100, "finding": "综合评估", "detail": "综合说明"}}
     }},
-    "key_findings": ["关键发现1", "关键发现2"],
-    "recommendations": ["建议1", "建议2"]
+    "key_findings": ["关键发现1（带具体数据支撑）", "关键发现2", "关键发现3"],
+    "red_flags": ["红旗信号1（如有）", "红旗信号2（如有）"],
+    "recommendations": ["具体建议1", "具体建议2", "具体建议3"],
+    "next_steps": ["后续行动1", "后续行动2"]
 }}
 
-只返回JSON，不要其他内容。"""
+注意：
+1. 每个维度的score必须是0-100的整数
+2. finding字段要用一句话精炼概括
+3. detail字段要包含具体数据分析和逻辑支撑
+4. 如果没有发现问题，score给低分并说明"未发现异常"
+5. 只返回JSON，不要任何其他内容"""
 
     try:
         # 调用LLM
@@ -269,37 +334,65 @@ def analyze_risk(enterprise_info, transactions):
                 llm_data = None
 
         if llm_data:
-            # 转换LLM结果为统一格式
+            # 转换LLM结果为统一格式 - 支持6个维度
             risk_findings = []
+            dimension_names = {
+                "operation_stability": "经营稳定性",
+                "cash_flow": "资金流向",
+                "industry_risk": "行业风险",
+                "transaction_behavior": "交易行为",
+                "aml_screening": "反洗钱筛查",
+                "overall": "综合风险"
+            }
+
             for key, value in llm_data.get("dimensions", {}).items():
-                if value.get("score", 0) >= 70:
+                score = value.get("score", 0)
+                if score >= 70:
                     level = "HIGH"
-                elif value.get("score", 0) >= 40:
+                elif score >= 40:
                     level = "MEDIUM"
                 else:
                     level = "LOW"
                 risk_findings.append({
-                    "type": key,
+                    "type": dimension_names.get(key, key),
+                    "type_key": key,
                     "level": level,
-                    "detail": value.get("finding", ""),
-                    "score": value.get("score", 0)
+                    "finding": value.get("finding", ""),
+                    "detail": value.get("detail", ""),
+                    "score": score
                 })
 
-            # 添加LLM的关键发现
+            # 添加关键发现
             for finding in llm_data.get("key_findings", []):
                 risk_findings.append({
-                    "type": "AI发现",
+                    "type": "关键发现",
+                    "type_key": "key_findings",
                     "level": "MEDIUM",
-                    "detail": finding
+                    "finding": finding,
+                    "detail": finding,
+                    "score": 50
+                })
+
+            # 添加红旗信号
+            for flag in llm_data.get("red_flags", []):
+                risk_findings.append({
+                    "type": "红旗信号",
+                    "type_key": "red_flags",
+                    "level": "HIGH",
+                    "finding": flag,
+                    "detail": flag,
+                    "score": 80
                 })
 
             return {
                 "risk_level": llm_data.get("risk_level", "medium"),
+                "risk_score": llm_data.get("risk_score", 50),
                 "high_risk_count": len([r for r in risk_findings if r.get("level") == "HIGH"]),
                 "medium_risk_count": len([r for r in risk_findings if r.get("level") == "MEDIUM"]),
                 "findings": risk_findings,
                 "llm_analysis": llm_data,
-                "recommendations": llm_data.get("recommendations", [])
+                "recommendations": llm_data.get("recommendations", []),
+                "next_steps": llm_data.get("next_steps", [])
             }
     except Exception as e:
         print(f"[LLM调用失败] {e}, 使用规则引擎兜底")
