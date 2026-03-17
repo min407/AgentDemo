@@ -571,4 +571,9 @@ if __name__ == '__main__':
     print("  银行智能尽调Agent系统")
     print("  访问地址: http://localhost:8888")
     print("=" * 50)
-    app.run(debug=True, host='0.0.0.0', port=8888)
+    # 优先使用80端口，如果不生效可能是权限问题
+    try:
+        app.run(debug=False, host='0.0.0.0', port=80)
+    except PermissionError:
+        # 普通用户无法使用80端口，回退到8888
+        app.run(debug=False, host='0.0.0.0', port=8888)
