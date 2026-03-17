@@ -1,4 +1,4 @@
-// 银行智能尽调Agent - 前端逻辑
+// 智能尽调分析系统 - 前端逻辑
 
 // 切换tab功能
 function switchTab(tab) {

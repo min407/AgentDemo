@@ -1,5 +1,5 @@
 """
-银行智能尽调Agent - Flask Web服务
+智能尽调分析系统 - Flask Web服务
 """
 import json
 import re
@@ -226,7 +226,7 @@ def analyze_risk(enterprise_info, transactions):
     expense = transactions.get('total_outflow', 0)
     income_expense_ratio = (income - expense) / income * 100 if income > 0 else 0
 
-    prompt = f"""你是一个资深的银行风险尽调分析师，擅长企业信用风险评估和反洗钱筛查。请根据以下企业信息进行专业、深入的风险评估。
+    prompt = f"""你是一个资深的企业风险分析师，擅长企业信用风险评估和反洗钱筛查。请根据以下企业信息进行专业、深入的风险评估。
 
 ## 一、企业基本信息
 | 字段 | 内容 |
@@ -316,7 +316,7 @@ def analyze_risk(enterprise_info, transactions):
 
     try:
         # 调用LLM
-        llm_result = llm_client.call(prompt, system_prompt="你是一个专业的银行风险分析师，擅长企业信用风险评估。")
+        llm_result = llm_client.call(prompt, system_prompt="你是一个专业的企业风险分析师，擅长企业信用风险评估。")
 
         # 解析LLM返回的JSON
         import json as json_module
@@ -568,7 +568,7 @@ def query():
 
 if __name__ == '__main__':
     print("=" * 50)
-    print("  银行智能尽调Agent系统")
+    print("  智能尽调分析系统")
     print("  访问地址: http://localhost:8888")
     print("=" * 50)
     # 优先使用80端口，如果不生效可能是权限问题

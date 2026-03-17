@@ -1,5 +1,5 @@
 """
-银行风险尽调智能分析Agent - 主程序入口
+企业风险尽调智能分析Agent - 主程序入口
 """
 import sys
 import time
