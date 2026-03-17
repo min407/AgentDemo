@@ -172,6 +172,28 @@ body {
     font-size: 14px;
     outline: none;
     transition: border-color 0.3s;
+    background-color: #fff;
+    cursor: pointer;
+    color: #bbb;
+}
+
+/* 默认灰色字体 */
+.search-input::-webkit-input-placeholder {
+    color: #bbb;
+}
+.search-input:-moz-placeholder {
+    color: #bbb;
+}
+.search-input::-moz-placeholder {
+    color: #bbb;
+}
+.search-input:-ms-input-placeholder {
+    color: #bbb;
+}
+
+/* 有内容时变黑色 */
+.search-input:not(:placeholder-shown) {
+    color: #333;
 }
 
 .search-input:focus {
@@ -478,29 +500,82 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* 响应式 */
+/* 响应式 - 手机端适配 */
 @media (max-width: 768px) {
+    /* 隐藏侧边栏 */
     .sidebar {
         display: none;
     }
 
+    /* 主内容区全宽 */
     .main-content {
         margin-left: 0;
+        padding: 16px;
     }
 
+    /* 头部适配 */
+    .header {
+        padding: 0 16px;
+    }
+
+    .logo-text {
+        font-size: 16px;
+    }
+
+    /* 搜索框适配 */
+    .search-section {
+        padding: 20px 16px;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+
+    /* 流程步骤适配 */
     .flow-steps {
         flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .step {
+        width: 45%;
     }
 
     .step-arrow {
         display: none;
     }
 
+    /* 信息网格适配 */
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .info-item {
+        padding: 12px;
+    }
+
+    /* 结果卡片适配 */
+    .result-card {
+        padding: 16px;
+    }
+
+    /* 工具网格适配 */
     .tools-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .info-grid {
-        grid-template-columns: repeat(2, 1fr);
+    /* 按钮适配 */
+    .btn-secondary {
+        width: 100%;
+        margin-top: 12px;
     }
 }

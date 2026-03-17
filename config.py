@@ -4,7 +4,7 @@
 import os
 
 # 通义千问API配置
-DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY", "your-api-key-here")
+DASHSCOPE_API_KEY = "sk-61a5eb4cd7e04bc7ba44acaa1bf1a99e"  # API Key
 QWEN_MODEL = "qwen-turbo"  # 可选: qwen-turbo, qwen-plus, qwen-max
 
 # 银行知识库配置

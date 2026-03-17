@@ -7,6 +7,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultSection = document.getElementById('resultSection');
     const exportBtn = document.getElementById('exportBtn');
 
+    // 默认值
+    const defaultValue = '深圳市赛为智能股份有限公司';
+
+    // 初始状态：显示默认值，灰色
+    keywordInput.value = defaultValue;
+    keywordInput.style.color = '#bbb';
+
+    // 输入框焦点事件
+    keywordInput.addEventListener('focus', function() {
+        if (this.value === defaultValue) {
+            this.value = '';
+            this.style.color = '#333';
+        }
+    });
+
+    // 输入框失焦事件
+    keywordInput.addEventListener('blur', function() {
+        if (!this.value.trim()) {
+            this.value = defaultValue;
+            this.style.color = '#bbb';
+        }
+    });
+
     // 绑定事件
     analyzeBtn.addEventListener('click', startAnalysis);
     keywordInput.addEventListener('keypress', function(e) {
@@ -18,10 +41,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 开始分析
     async function startAnalysis() {
-        const keyword = keywordInput.value.trim();
+        let keyword = keywordInput.value.trim();
+        // 如果为空，使用默认值
         if (!keyword) {
-            alert('请输入查询关键词');
-            return;
+            keyword = defaultValue;
+            keywordInput.value = defaultValue;
+            keywordInput.style.color = '#bbb';
         }
 
         // 禁用按钮
@@ -157,7 +182,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 导出报告
     function exportReport() {
-        alert('报告导出功能开发中...');
+        const resultCard = document.querySelector('.result-card');
+        if (!resultCard) {
+            alert('请先生成分析报告');
+            return;
+        }
+
+        const companyName = document.getElementById('companyName').textContent || '企业尽调报告';
+        const riskLevel = document.getElementById('riskText').textContent || '风险报告';
+
+        // PDF导出配置
+        const opt = {
+            margin: 10,
+            filename: `${companyName}_尽调报告_${new Date().toISOString().slice(0,10)}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // 使用html2pdf导出
+        html2pdf().set(opt).from(resultCard).save();
     }
 
     // 休眠函数

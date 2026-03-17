@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>银行智能尽调Agent系统</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <!-- PDF导出库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -46,9 +48,16 @@
             <!-- 查询区域 -->
             <section class="search-section">
                 <h2>企业风险尽调分析</h2>
-                <p class="subtitle">输入客户名称/证件号/客户号，快速获取企业风险分析报告</p>
+                <p class="subtitle">选择企业或输入客户名称/证件号，快速获取企业风险分析报告</p>
                 <div class="search-box">
-                    <input type="text" id="keywordInput" placeholder="请输入客户名称或统一社会信用代码" class="search-input">
+                    <input type="text" id="keywordInput" class="search-input" list="enterpriseList" placeholder="请输入客户名称或统一社会信用代码" value="深圳市赛为智能股份有限公司">
+                    <datalist id="enterpriseList">
+                        <option value="深圳市赛为智能股份有限公司"></option>
+                        <option value="深圳市恒盈投资集团有限公司"></option>
+                        <option value="深圳市长亮科技股份有限公司"></option>
+                        <option value="滴滴出行科技有限公司"></option>
+                        <option value="金蝶软件（中国）有限公司"></option>
+                    </datalist>
                     <button id="analyzeBtn" class="btn-primary">开始分析</button>
                 </div>
             </section>
